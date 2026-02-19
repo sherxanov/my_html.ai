@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML AI - Professional Chat</title>
+    <style>
+        /* CSS QISMI - BU YERDAN BOSHLANADI */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #4b0000 0%, #000000 100%);
+            background-size: 200% 200%;
+            animation: moveBg 8s ease infinite;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+
+        @keyframes moveBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            position: relative;
+            width: 400px;
+            padding: 30px;
+            background: #000;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0,0,0,1);
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -4px; left: -4px; right: -4px; bottom: -4px;
+            background: linear-gradient(45deg, #fbff00, #00ff40, #00d4ff, #fbff00);
+            z-index: -1;
+            border-radius: 24px;
+            background-size: 400%;
+            animation: rotateGlow 3s linear infinite;
+        }
+
+        @keyframes rotateGlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 400% 0%; }
+        }
+
+        .chat-box {
+            height: 250px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            padding: 15px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        /* "AI yozmoqda..." animatsiyasi */
+        .typing {
+            font-style: italic;
+            font-size: 13px;
+            color: #fbff00;
+            margin-bottom: 10px;
+            display: none; 
+        }
+
+        @keyframes blink {
+            0% { opacity: .2; }
+            20% { opacity: 1; }
+            100% { opacity: .2; }
+        }
+
+        .typing span { animation: blink 1.4s infinite both; }
+        .typing span:nth-child(2) { animation-delay: .2s; }
+        .typing span:nth-child(3) { animation-delay: .4s; }
+
+        .ai-msg { color: #00ff40; margin-bottom: 12px; }
+        .user-msg { color: #00d4ff; margin-bottom: 12px; text-align: right; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 8px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #00ff40;
+            background: transparent;
+            color: #00ff40;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: #00d4ff;
+            transition: 0.4s;
+            z-index: -1;
+        }
+
+        button:active::after { left: 0; }
+        button:active { color: #000; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>HTML AI</h1>
+        <div class="chat-box" id="chatBox">
+            <div class="ai-msg">AI: Salom! Men HTML bo'yicha suhbatdoshingizman.</div>
+            <div id="typingIndicator" class="typing">AI o'ylamoqda<span>.</span><span>.</span><span>.</span></div>
+        </div>
+        
+        <input type="text" id="userInput" placeholder="Enter-ni bosing..." autocomplete="off">
+        <button id="sendBtn">YUBORISH</button>
+    </div>
+
+    <script>
+        const input = document.getElementById('userInput');
+        const chatBox = document.getElementById('chatBox');
+        const indicator = document.getElementById('typingIndicator');
+        const btn = document.getElementById('sendBtn');
+
+        // Enter orqali yuborish
+        input.addEventListener("keypress", (e) => { if (e.key === "Enter") askAI(); });
+        btn.addEventListener("click", askAI);
+
+        function askAI() {
+            let val = input.value.trim();
+            if (val === "") return;
+
+            chatBox.innerHTML += `<div class="user-msg">Siz: ${val}</div>`;
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Animatsiyani ko'rsatish
+            indicator.style.display = "block";
+            chatBox.appendChild(indicator); // Indikator doim pastda bo'lishi uchun
+
+            setTimeout(() => {
+                let lower = val.toLowerCase();
+                let res = "Bu qiziq! HTML bo'yicha yana nima so'raysiz?";
+
+                if (lower.includes("video")) res = "HTML-da <video> tegi ishlatiladi.";
+                else if (lower.includes("rasm")) res = "Rasm uchun <img> tegi kerak.";
+                else if (lower.includes("havola") || lower.includes("link")) res = "Havola uchun <a> tegi ishlatiladi.";
+
+                indicator.style.display = "none";
+                chatBox.innerHTML += `<div class="ai-msg">AI: ${res}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
